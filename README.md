@@ -1,1 +1,0 @@
-# HPSEC-visual
