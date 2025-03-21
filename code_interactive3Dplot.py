@@ -119,7 +119,7 @@ import plotly.subplots as psub
 import re
 
 
-# In[150]:
+# In[162]:
 
 
 # Generate a 2x2 grid of 3D plots
@@ -136,8 +136,14 @@ positions = [(1, 1), (1, 2), (2, 1), (2, 2)]
 scenes = {}
 traces = []
 
+# Set axis limits manually
+x_min, x_max = 0, 33
+y_min, y_max = 0, 1500
+z_min = df_filtered['Area %'].min()
+z_max = df_filtered['Area %'].max()
+
 for i, (sample, (row, col)) in enumerate(zip(sample_names, positions)):
-    df_sample = df_filtered[df_filtered['sample_name'] == sample]
+    df_sample = df_plot[df_plot['sample_name'] == sample]
     scatter3d = go.Scatter3d(
         x=df_sample['fraction_low'],
         y=df_sample['kDa'],
@@ -156,8 +162,8 @@ for i, (sample, (row, col)) in enumerate(zip(sample_names, positions)):
     )
     fig.add_trace(scatter3d, row=row, col=col)
     scenes[f'scene{i+1}'] = dict(
-        xaxis=dict(title='Fraction Number', titlefont=dict(size=10)),
-        yaxis=dict(title='Molecular Weight (kDa)', titlefont=dict(size=10)),
+        xaxis=dict(title='Fraction Number', titlefont=dict(size=10), range=[x_min, x_max]),
+        yaxis=dict(title='Molecular Weight (kDa)', titlefont=dict(size=10), range=[y_min, y_max]),
         zaxis=dict(title='Area (%)', titlefont=dict(size=10))
     )
 
@@ -167,10 +173,10 @@ fig.add_trace(go.Scatter3d(
     mode='markers',
     marker=dict(
         size=8,
-        color=[df_filtered['Area %'].min(), df_filtered['Area %'].max()],
+        color=[df_plot['Area %'].min(), df_plot['Area %'].max()],
         colorscale=[(0, 'blue'), (1, 'red')],
-        cmin=df_filtered['Area %'].min(),
-        cmax=df_filtered['Area %'].max(),
+        cmin=df_plot['Area %'].min(),
+        cmax=df_plot['Area %'].max(),
         showscale=True,
         colorbar=dict(title='Area (%)', x=1.1)
     ),
@@ -188,7 +194,7 @@ fig.update_layout(
 
 
 
-# In[154]:
+# In[164]:
 
 
 # Save as interactive HTML file
